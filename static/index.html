@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ru">
+<head>
+ <meta charset="utf-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+ <title>Радиодозор</title>
+ <link rel="icon" href="data:,">
+ <link rel="stylesheet" href="style.css?v=2">
+ <script defer src="scope.js"></script>
+ <script defer src="dashboard.js?v=2"></script>
+</head>
+<body>
+ <header>
+  <div><h1>Радиодозор</h1><p>Движение и дыхательный ритм по Wi‑Fi CSI</p></div>
+  <span id="connection" class="pill" role="status">Подключение</span>
+ </header>
+ <main>
+  <nav id="mode-switch" class="mode-switch" aria-label="Режим работы" hidden>
+   <button id="guard-mode" data-action="guard" aria-pressed="true">Охрана помещения</button>
+   <button id="sleep-mode" data-action="sleep" aria-pressed="false">Опека · сон</button>
+  </nav>
+  <div id="alarm-banner" class="notice alarm" hidden role="alert">
+   <div><strong id="alarm-title"></strong><p>Событие сохранено в журнале.</p></div>
+   <button id="clear" data-action="clear">Сбросить тревогу</button>
+  </div>
+  <div id="cal-banner" class="notice" hidden role="status">
+   <strong id="cal-status"></strong>
+   <button data-action="cancel">Отмена</button>
+  </div>
+  <div class="dashboard">
+   <section class="scope panel" aria-labelledby="scope-title">
+    <div class="panel-head">
+     <h2 id="scope-title">Обзор I/Q</h2>
+     <button id="fullscreen">На весь экран</button>
+    </div>
+    <div class="viewport" id="guard-view"><canvas id="scope" role="img" aria-label="След изменений комплексного радиосигнала"></canvas></div>
+    <div class="sleep-view" id="sleep-view" hidden>
+     <p class="sleep-placement">Во время сна разместите ESP на расстоянии до 1 м от человека, сбоку на уровне груди.</p>
+     <div class="sleep-chart">
+      <canvas id="sleep-wave" hidden role="img" aria-label="Нормированный дыхательный сигнал за 40 секунд"></canvas>
+      <p class="caption" id="sleep-placeholder">Ожидание устойчивого дыхательного сигнала</p>
+     </div>
+     <p class="caption">Одна радиолиния, один человек. График показывает изменения CSI в дыхательном диапазоне.</p>
+    </div>
+    <div class="scope-controls">
+     <label>Радиолиния <select id="link" disabled><option>Ожидание CSI</option></select></label>
+     <label class="gain" id="gain-control">Яркость следа <input id="gain" type="range" min=".4" max="3.2" step=".1" value="1.4"></label>
+    </div>
+    <p class="caption" id="guard-caption">Цвет показывает возраст следа. Кольца показывают величину изменения I/Q.</p>
+   </section>
+   <aside>
+    <section class="panel monitor" aria-labelledby="state-heading">
+     <h2 id="state-heading">Наблюдение</h2>
+     <p id="state" role="status">Ожидание данных</p>
+     <dl class="metrics">
+      <div id="motion-metric"><dt>Движение</dt><dd id="motion">—</dd><small>Относительно порога</small></div>
+      <div><dt>Дыхательный ритм</dt><dd id="rpm">—</dd><small>Циклов в минуту</small></div>
+      <div id="strength-metric" hidden><dt>Сила дыхательного сигнала</dt><dd id="strength">—</dd><small>Относительно порога фона</small></div>
+      <div id="pulse-metric" hidden><dt>Пульс · эксперимент</dt><dd id="pulse">—</dd><small id="pulse-note">Недостаточно сигнала</small></div>
+     </dl>
+     <canvas id="wave" hidden role="img" aria-label="Нормированный сигнал за 40 секунд"></canvas>
+     <p id="rhythm-note" class="caption">Для оценки ритма нужно 40 секунд устойчивого сигнала.</p>
+     <div class="buttons">
+      <button id="calibrate" data-action="calibrate" disabled>Записать пустую комнату</button>
+      <button id="arm" class="accent" data-action="arm" disabled>Включить тревогу</button>
+     </div>
+     <label class="sound" id="sound-control"><input type="checkbox" id="sound"> Звук тревоги в этой вкладке</label>
+     <p class="caption care-note" id="care-note" hidden>Экспериментальные оценки. Для наблюдения за состоянием спящего используйте проверенный монитор.</p>
+     <p id="feedback" class="caption" role="status"></p>
+    </section>
+    <section class="panel journal" aria-labelledby="journal-heading">
+     <div class="panel-head"><h2 id="journal-heading">События</h2><a href="/api/events">Скачать журнал</a></div>
+     <ul id="events"><li class="caption">Пока без событий</li></ul>
+    </section>
+   </aside>
+  </div>
+  <footer id="transport"></footer>
+ </main>
+</body>
+</html>
